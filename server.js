@@ -41,14 +41,27 @@ app.post('/messages', (req, res) => {
 app.put('/messages', (req, res) => {
   db.collection('messages')
   .findOneAndUpdate({name: req.body.name, msg: req.body.msg}, {
-    $set: {
-      thumbUp:req.body.thumbUp + 1
+    $inc: {
+      thumbUp: 1
     }
   }, {
-    sort: {_id: -1},
-    upsert: true
+    sort: {_id: -1}
   }, (err, result) => {
-    if (err) return res.send(err)
+    if (err) return res.status(500).send(err)
+    res.send(result)
+  })
+})
+
+app.put('/messages/down', (req, res) => {
+  db.collection('messages')
+  .findOneAndUpdate({name: req.body.name, msg: req.body.msg}, {
+    $inc: {
+      thumbDown: 1
+    }
+  }, {
+    sort: {_id: -1}
+  }, (err, result) => {
+    if (err) return res.status(500).send(err)
     res.send(result)
   })
 })
